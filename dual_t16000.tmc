@@ -1,0 +1,383 @@
+ //-------------------------------------------------------------------------------------------------
+
+// TARGET Script for playing "Elite: Dangerous" with two Thrustmaster T.16000M Joysticks
+
+//-------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------
+
+// Original Author: 'drakmaniso' Laurent Moussault <moussault.laurent@gmail.com>
+
+// -------------------------------------------------------------------------------------------------
+
+
+include "target.tmh"
+
+alias left;
+alias right;
+
+
+// Script Settings --------------------------------------------------------------------------------
+
+
+// Choose whether relative throttle is enabled
+// Allows absolute throttle to be set using select joystick slider (cruise control)
+// and altering absolute throttle with select joystick axis.
+//
+define REL_THROTTLE_ENABLED   0     // '0' or '1'         (default: '1')
+define REL_THROTTLE_AXIS      JOYY  // 'JOYY' or 'RUDDER' (default: 'JOYY')
+define REL_THROTTLE_STICK     left  // 'left' or 'right'  (default: 'left')
+define ABS_THROTTLE_SLIDER    left  // 'left' or 'right'  (default: 'left')
+
+// Choose whether throttle scaling is enabled
+// Throttle scaling changes minimum and maximum throttle ranges
+// based on slider input. A scale value of 0 prevents throttle input
+// while a scale value of 1 allows full throttle range.
+//
+define SCALE_THROTTLE_ENABLED 1     // '0' or '1'         (default: '1')
+define SCALE_THROTTLE_SLIDER  right // 'left' or 'right'  (default: 'right')
+
+// Define a button to use for FA Toggle.
+// This button will set absolute throttle to 0 when FA Off is active.
+// Note that in order to use this, the "Toggle Flight Assist"
+// option in the game have to be set on hold (instead of toggle).
+//
+define FA_TOGGLE_ENABLED      1     // '0' or '1'         (default: '1')
+define FA_TOGGLE_BUTTON       TS2   // 'TS1' .. 'TS4'     (default: 'TS3')
+define FA_TOGGLE_STICK        right  // 'left' or 'right'  (default: 'left')
+
+// Define a specific button to use as a shift mode selector. 
+// When held down, all other buttons (of both joysticks) have a different binding.
+//
+define SHIFT_ENABLED          0     // '0' or '1'         (default: '1')
+define SHIFT_BUTTON           TS1   // 'TS1' .. 'TS4'     (default: 'TS1')               
+define SHIFT_STICK            left  // 'left' or 'right'  (default: 'left')
+
+
+
+
+
+
+// Button Mapping ---------------------------------------------------------------------------------
+
+
+int rightButtonMap[] = {
+    // The trigger
+    TS1, DX1,
+    // The 3 thumb buttons
+    TS2, DX2,
+    TS3, DX3,
+    TS4, DX4,
+    // The POV Hat
+    H1L, DXHATLEFT,
+    H1U, DXHATUP,
+    H1R, DXHATRIGHT,
+    H1D, DXHATDOWN,
+    // The 12 buttons on the base
+    B5, DX9,
+    B6, DX10,
+    B7, R_SHIFT+END,
+    B8, DX12,
+    B9, DX25,
+    B10, DX26,
+    B11, DX27,
+    B12, DX28,
+    B13, DX29,
+    B14, DX30,
+    B15, DX31,
+    B16, DX32
+};
+
+int leftButtonMap[] = {
+    // The trigger
+    TS1, DX13,
+    // The 3 thumb buttons
+    TS2, DX14,
+    TS3, DX15,
+    TS4, DX16,
+    // The POV Hat
+    H1L, DX21,
+    H1U, DX22,
+    H1R, DX23,
+    H1D, DX24,
+    // The 12 buttons on the base
+    B5, DX32, 
+    B6, DX32, 
+    B7, R_SHIFT+END, 
+    B8, DX32, 
+    B9, DX32, 
+    B10, DX32,
+    B11, DX32,
+    B12, DX32,
+    B13, DX32,
+    B14, DX32,
+    B15, DX32,
+    B16, DX32
+};
+
+
+// Script Implementation --------------------------------------------------------------------------
+
+
+float throttlePos, throttlePercent;
+int throttleScale, throttleScaleDiff;
+int throttleCenter, throttleLimitOne, throttleLimitTwo;
+int throttleCurve;
+int ignoreSlider;
+int isFAOn;
+
+int main()
+{
+    Configure(&HCougar, MODE_EXCLUDED);
+    Configure(&Joystick, MODE_EXCLUDED);
+    Configure(&Throttle, MODE_EXCLUDED);
+    Configure(&LMFD, MODE_EXCLUDED);
+    Configure(&RMFD, MODE_EXCLUDED);
+    Configure(&TWCSThrottle, MODE_EXCLUDED);
+    Configure(&TFRPRudder, MODE_EXCLUDED);
+
+    if(Init(&EventHandle)) return 1;
+
+	SetKBLayout(KB_ENG);
+
+    &left = &T16000L;
+    &right = &T16000;
+
+
+// Throttle Curves ---------------------------------------------------------------------------------
+
+
+	MapAxis(&right, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	SetSCurve(&right, JOYX, 0, 0, 0, 3, 1);
+	MapAxis(&right, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	SetSCurve(&right, JOYY, 0, 0, 0, 3, 1);
+	MapAxis(&right, RUDDER, DX_ZROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	SetSCurve(&right, RUDDER, 0, 0, 0, 3, 1);
+	MapAxis(&right, THR, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+	SetSCurve(&T16000, THR, 0, 0, 0, 0, 0);
+	
+	
+	
+    // Right Joystick 
+    MapAxis(&right, JOYX, DX_X_AXIS);
+    MapAxis(&right, JOYY, DX_Y_AXIS);
+    MapAxis(&right, RUDDER, DX_Z_AXIS);
+    mapButtons(&right, &rightButtonMap);
+
+    // Left Joystick
+    MapAxis(&left, JOYX, DX_XROT_AXIS);
+    MapAxis(&left, JOYY, DX_YROT_AXIS);
+    MapAxis(&left, RUDDER, DX_ZROT_AXIS);
+    mapButtons(&left, &leftButtonMap);
+
+    // Map relative throttle input
+    if(REL_THROTTLE_ENABLED) {
+        MapAxis(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, DX_THROTTLE_AXIS);
+    }
+
+    // Map throttle scale input
+    if(SCALE_THROTTLE_ENABLED) {
+        KeyAxis(&SCALE_THROTTLE_SLIDER, THR, 0,
+            AXMAP3(
+                EXEC("updateThrottleScale();")
+            )
+        );
+    }
+
+    // Map absolute throttle input
+    KeyAxis(&ABS_THROTTLE_SLIDER, THR, 0,
+        AXMAP3(
+            EXEC("updateThrottleCurve(0);")
+        )
+    );
+
+    isFAOn = 1;
+    throttleScale = 100;
+ 
+ 
+ 	// Tempo maps on right stick
+    MapKey(&right, TS4, TEMPO(DX4, DX8, 250));
+    MapKey(&right, TS3, TEMPO(DX3, DX7, 250));
+
+    // Tempo map on left stick
+    MapKey(&left, TS2, TEMPO(DX14, DX18, 250));
+    MapKey(&left, TS3, TEMPO(DX15, DX19, 250));
+    MapKey(&left, TS4, TEMPO(DX16, DX20, 250));
+    
+    
+    MapKey(&right, H1L, TEMPO(DXHATLEFT, CHAIN(
+ 	PULSE+DXHATDOWN,
+ 	D(),
+	PULSE+DXHATRIGHT,
+ 	D(),
+	PULSE+DXHATRIGHT,
+ 	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+	PULSE+DXHATLEFT
+ 	)));
+	
+	MapKey(&right, H1U, TEMPO(DXHATUP, CHAIN(
+ 	PULSE+DXHATDOWN,
+ 	D(),
+	PULSE+DXHATRIGHT,
+ 	D(),
+	PULSE+DXHATRIGHT,
+ 	D(),
+ 	PULSE+DXHATUP,
+	D(),
+ 	PULSE+DXHATUP,
+	D(),
+ 	PULSE+DXHATUP,
+	D(),
+	PULSE+DXHATUP
+ 	))); 
+
+	MapKey(&right, H1R, TEMPO(DXHATRIGHT, CHAIN(
+ 	PULSE+DXHATDOWN,
+ 	D(),
+	PULSE+DXHATLEFT,
+ 	D(),
+	PULSE+DXHATLEFT,
+ 	D(),
+ 	PULSE+DXHATRIGHT,
+	D(),
+ 	PULSE+DXHATRIGHT,
+	D(),
+ 	PULSE+DXHATRIGHT,
+	D(),
+	PULSE+DXHATRIGHT
+ 	)));
+ 	
+ 	MapKey(&right, H1D, TEMPO(DXHATDOWN, CHAIN(
+ 	PULSE+DXHATDOWN,
+ 	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+	PULSE+DXHATUP,
+ 	D(),
+ 	PULSE+DXHATUP,
+ 	D(),
+ 	PULSE+DXHATUP,
+ 	D(),
+	PULSE+DXHATUP
+ 	)));
+ 	
+}
+
+
+int EventHandle(int type, alias o, int x)
+{
+    DefaultMapping(&o, x);
+}
+
+// Run a single command when axis value changes
+int AXMAP3(int n){ Dim(&n, 1); return ASMAlloc(1, &&n, &axmap3proc); }
+int axmap3proc(alias v, int p, int x)
+{
+    Map(&p, &&v[p + 1 & 0xffff]); Dim(&p, 2);
+    ActKey(p[1] | KEYON);
+}
+
+// Change throttle curve to reflect center axis set by slider
+// If FA is off, revert to linear curve and ignore slider
+// Preserve center axis last set by slider when FA toggled back on
+int updateThrottleCurve(int useOldThrottlePos)
+{
+    if(isFAOn) {
+        ignoreSlider = 0;
+
+        if(!useOldThrottlePos) {
+            throttlePos = axdata.val;
+        }
+
+        throttlePercent = (throttlePos*throttleScale/100+AMAX) / (AMAXF+AMAXF-2);
+        throttleScaleDiff = 50-50*throttleScale/100;
+
+        // Calculate inputs for custom curve
+        throttleCenter = throttlePercent*100;
+        throttleLimitOne = throttleScaleDiff;
+        throttleLimitTwo = 100 - throttleScaleDiff;
+
+        // Create curve profile. Invert inputs if using rudder (Z_AXIS)
+        if(REL_THROTTLE_AXIS == JOYY){
+            throttleCurve = LIST(0, throttleLimitOne, 50, throttleCenter, 100, throttleLimitTwo);
+        } else {
+            throttleCurve = LIST(0, throttleLimitTwo, 50, throttleCenter, 100, throttleLimitOne);
+        }
+
+        // Set curve profile for relative throttle input
+        if(REL_THROTTLE_ENABLED) {
+            SetCustomCurve(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, throttleCurve);
+        }
+
+        // Set absolute throttle position
+        DXAxis(DX_THROTTLE_AXIS, -AMAX+AMAX*throttlePercent*2);
+
+    } else if(!ignoreSlider) {
+        // Set linear curve for relative throttle input
+        // and set throttle to 0 for FA off flight
+        SetCustomCurve(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, 0); 
+        DXAxis(DX_THROTTLE_AXIS, 0);
+        ignoreSlider = 1;
+    } else {
+        // Track absolute throttle position
+        throttlePos = axdata.val;
+    }
+}
+
+// Get throttle scale input value then update
+// throttle curve to reflact scaling value
+int updateThrottleScale()
+{
+    throttleScale = 100 - ((axdata.val+AMAX)*100 / (AMAXF+AMAXF-2));
+    updateThrottleCurve(1);
+}
+
+int mapButtons(alias device, alias list)
+{
+    int length = elements(&list);
+    int i = 0;
+    while(i < length){
+        if(FA_TOGGLE_ENABLED & (&device == &FA_TOGGLE_STICK) & (list[i] == FA_TOGGLE_BUTTON)){
+            MapKeyIO(&FA_TOGGLE_STICK, FA_TOGGLE_BUTTON,
+                list[i+1],
+                SEQ(
+                    CHAIN(
+                        DOWN+list[i+1],
+                        EXEC("isFAOn = 0; updateThrottleCurve(0);")
+                    ),
+                    CHAIN(
+                        UP+list[i+1],
+                        EXEC("isFAOn = 1; updateThrottleCurve(1);")
+                    )
+                )
+            );
+        } else {
+            MapKey(&device, list[i], list[i+1]);
+        }
+        i = i + 2;
+    }
+    
+    MapKey(&right, H1L,CHAIN(
+ 	LOCK+ //Toggle lock
+ 	PULSE+DXHATDOWN,
+ 	D(),
+ 	PULSE+DXHATLEFT,
+ 	D(),
+ 	PULSE+DXHATRIGHT,
+	D(),
+ 	PULSE+DXHATLEFT,
+	D(),
+ 	PULSE+DXHATRIGHT,
+
+ 	LOCK
+ )); 
+    
+}
