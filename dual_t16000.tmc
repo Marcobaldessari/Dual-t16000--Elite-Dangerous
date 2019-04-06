@@ -199,6 +199,28 @@ int main()
     MapKey(&left, TS3, TEMPO(DX15, DX19, 250));
     MapKey(&left, TS4, TEMPO(DX16, DX20, 250));
     
+    /*
+    SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
+    MapKeyUMD(&right, H1L,
+        TEMPO(DXHATLEFT, CHAIN(
+            PULSE+DXHATDOWN,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT
+    )),
+        DXHATLEFT,
+        DXHATLEFT);
+    */
+
     // POV hat macros for PIP management 
     MapKey(&right, H1L, TEMPO(DXHATLEFT, CHAIN(
      	PULSE+DXHATDOWN,
