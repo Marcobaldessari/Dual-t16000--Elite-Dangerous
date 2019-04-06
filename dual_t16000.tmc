@@ -1,4 +1,4 @@
- //-------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 // TARGET Script for playing "Elite: Dangerous" with two Thrustmaster T.16000M Joysticks
 
@@ -144,9 +144,7 @@ int main()
     &right = &T16000;
 
 
-// Throttle Curves ---------------------------------------------------------------------------------
-
-
+    // Throttle Curves 
 	MapAxis(&right, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
 	SetSCurve(&right, JOYX, 0, 0, 0, 3, 1);
 	MapAxis(&right, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
@@ -155,8 +153,6 @@ int main()
 	SetSCurve(&right, RUDDER, 0, 0, 0, 3, 1);
 	MapAxis(&right, THR, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
 	SetSCurve(&T16000, THR, 0, 0, 0, 0, 0);
-	
-	
 	
     // Right Joystick 
     MapAxis(&right, JOYX, DX_X_AXIS);
@@ -194,81 +190,79 @@ int main()
     isFAOn = 1;
     throttleScale = 100;
  
- 
- 	// Tempo maps on right stick
+ 	// Tempo maps on right stick thumb buttons
     MapKey(&right, TS4, TEMPO(DX4, DX8, 250));
     MapKey(&right, TS3, TEMPO(DX3, DX7, 250));
 
-    // Tempo map on left stick
+    // Tempo map on left stick thumb buttons
     MapKey(&left, TS2, TEMPO(DX14, DX18, 250));
     MapKey(&left, TS3, TEMPO(DX15, DX19, 250));
     MapKey(&left, TS4, TEMPO(DX16, DX20, 250));
     
-    
+    // POV hat macros for PIP management 
     MapKey(&right, H1L, TEMPO(DXHATLEFT, CHAIN(
- 	PULSE+DXHATDOWN,
- 	D(),
-	PULSE+DXHATRIGHT,
- 	D(),
-	PULSE+DXHATRIGHT,
- 	D(),
- 	PULSE+DXHATLEFT,
-	D(),
- 	PULSE+DXHATLEFT,
-	D(),
- 	PULSE+DXHATLEFT,
-	D(),
-	PULSE+DXHATLEFT
+     	PULSE+DXHATDOWN,
+     	D(),
+    	PULSE+DXHATRIGHT,
+     	D(),
+    	PULSE+DXHATRIGHT,
+     	D(),
+     	PULSE+DXHATLEFT,
+    	D(),
+     	PULSE+DXHATLEFT,
+    	D(),
+     	PULSE+DXHATLEFT,
+    	D(),
+    	PULSE+DXHATLEFT
  	)));
 	
 	MapKey(&right, H1U, TEMPO(DXHATUP, CHAIN(
- 	PULSE+DXHATDOWN,
- 	D(),
-	PULSE+DXHATRIGHT,
- 	D(),
-	PULSE+DXHATRIGHT,
- 	D(),
- 	PULSE+DXHATUP,
-	D(),
- 	PULSE+DXHATUP,
-	D(),
- 	PULSE+DXHATUP,
-	D(),
-	PULSE+DXHATUP
+     	PULSE+DXHATDOWN,
+     	D(),
+    	PULSE+DXHATRIGHT,
+     	D(),
+    	PULSE+DXHATRIGHT,
+     	D(),
+     	PULSE+DXHATUP,
+    	D(),
+     	PULSE+DXHATUP,
+    	D(),
+     	PULSE+DXHATUP,
+    	D(),
+    	PULSE+DXHATUP
  	))); 
 
 	MapKey(&right, H1R, TEMPO(DXHATRIGHT, CHAIN(
- 	PULSE+DXHATDOWN,
- 	D(),
-	PULSE+DXHATLEFT,
- 	D(),
-	PULSE+DXHATLEFT,
- 	D(),
- 	PULSE+DXHATRIGHT,
-	D(),
- 	PULSE+DXHATRIGHT,
-	D(),
- 	PULSE+DXHATRIGHT,
-	D(),
-	PULSE+DXHATRIGHT
+     	PULSE+DXHATDOWN,
+     	D(),
+    	PULSE+DXHATLEFT,
+     	D(),
+    	PULSE+DXHATLEFT,
+     	D(),
+     	PULSE+DXHATRIGHT,
+    	D(),
+     	PULSE+DXHATRIGHT,
+    	D(),
+     	PULSE+DXHATRIGHT,
+    	D(),
+    	PULSE+DXHATRIGHT
  	)));
  	
  	MapKey(&right, H1D, TEMPO(DXHATDOWN, CHAIN(
- 	PULSE+DXHATDOWN,
- 	D(),
- 	PULSE+DXHATLEFT,
-	D(),
- 	PULSE+DXHATLEFT,
-	D(),
-	PULSE+DXHATUP,
- 	D(),
- 	PULSE+DXHATUP,
- 	D(),
- 	PULSE+DXHATUP,
- 	D(),
-	PULSE+DXHATUP
+     	PULSE+DXHATDOWN,
+     	D(),
+     	PULSE+DXHATLEFT,
+    	D(),
+     	PULSE+DXHATLEFT,
+    	D(),
+    	PULSE+DXHATUP,
+     	D(),
+     	PULSE+DXHATUP,
+     	D(),
+     	PULSE+DXHATUP,
+     	D(),
+    	PULSE+DXHATUP
  	)));
- 	
 }
 
 
@@ -364,20 +358,4 @@ int mapButtons(alias device, alias list)
         }
         i = i + 2;
     }
-    
-    MapKey(&right, H1L,CHAIN(
- 	LOCK+ //Toggle lock
- 	PULSE+DXHATDOWN,
- 	D(),
- 	PULSE+DXHATLEFT,
- 	D(),
- 	PULSE+DXHATRIGHT,
-	D(),
- 	PULSE+DXHATLEFT,
-	D(),
- 	PULSE+DXHATRIGHT,
-
- 	LOCK
- )); 
-    
 }
