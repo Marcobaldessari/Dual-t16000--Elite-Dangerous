@@ -106,7 +106,7 @@ int main()
                     )
                 )
             );  
-    
+
     MapKey(&right, TS4, TEMPO(DX4, DX8, 250));
     MapKey(&right, TS3, TEMPO(DX3, DX7, 250));
 
@@ -223,6 +223,92 @@ int main()
     MapKey(&left, B15, DX32);
     MapKey(&left, B16, DX32);
     
+
+
+    /*
+    SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
+    MapKeyUMD(&right, H1L,
+        TEMPO(DXHATLEFT, CHAIN(
+            PULSE+DXHATDOWN,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT
+            )),
+        DXHATLEFT,
+        DXHATLEFT
+    );
+
+    MapKeyUMD(&right, H1U,
+        TEMPO(DXHATUP, CHAIN(
+            PULSE+DXHATDOWN,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP
+            )),
+        DXHATUP,
+        DXHATUP
+    );
+    
+    MapKeyUMD(&right, H1R,
+        TEMPO(DXHATRIGHT, CHAIN(
+            PULSE+DXHATDOWN,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT,
+            D(),
+            PULSE+DXHATRIGHT
+            )),
+        DXHATRIGHT,
+        DXHATRIGHT
+    );
+
+    MapKeyUMD(&right, H1D,
+        TEMPO(DXHATDOWN, CHAIN(
+            PULSE+DXHATDOWN,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATLEFT,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP,
+            D(),
+            PULSE+DXHATUP
+            )),
+        DXHATDOWN,
+        DXHATDOWN
+    );
+    */
+
+    
     // Map relative throttle input
     if(REL_THROTTLE_ENABLED) {
         MapAxis(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, DX_THROTTLE_AXIS);
@@ -248,27 +334,6 @@ int main()
     throttleScale = 100;
 
     
-    /*
-    SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
-    MapKeyUMD(&right, H1L,
-        TEMPO(DXHATLEFT, CHAIN(
-            PULSE+DXHATDOWN,
-            D(),
-            PULSE+DXHATRIGHT,
-            D(),
-            PULSE+DXHATRIGHT,
-            D(),
-            PULSE+DXHATLEFT,
-            D(),
-            PULSE+DXHATLEFT,
-            D(),
-            PULSE+DXHATLEFT,
-            D(),
-            PULSE+DXHATLEFT
-    )),
-        DXHATLEFT,
-        DXHATLEFT);
-    */
 }
 
 
