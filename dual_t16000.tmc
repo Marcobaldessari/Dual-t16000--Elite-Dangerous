@@ -37,14 +37,6 @@ define ABS_THROTTLE_SLIDER    left  // 'left' or 'right'  (default: 'left')
 define SCALE_THROTTLE_ENABLED 1     // '0' or '1'         (default: '1')
 define SCALE_THROTTLE_SLIDER  right // 'left' or 'right'  (default: 'right')
 
-// Define a button to use for FA Toggle.
-// This button will set absolute throttle to 0 when FA Off is active.
-// Note that in order to use this, the "Toggle Flight Assist"
-// option in the game have to be set on hold (instead of toggle).
-//
-define FA_TOGGLE_ENABLED      1     // '0' or '1'         (default: '1')
-define FA_TOGGLE_BUTTON       TS2   // 'TS1' .. 'TS4'     (default: 'TS3')
-define FA_TOGGLE_STICK        right  // 'left' or 'right'  (default: 'left')
 
 // Define a specific button to use as a shift mode selector. 
 // When held down, all other buttons (of both joysticks) have a different binding.
@@ -52,68 +44,6 @@ define FA_TOGGLE_STICK        right  // 'left' or 'right'  (default: 'left')
 define SHIFT_ENABLED          0     // '0' or '1'         (default: '1')
 define SHIFT_BUTTON           TS1   // 'TS1' .. 'TS4'     (default: 'TS1')               
 define SHIFT_STICK            left  // 'left' or 'right'  (default: 'left')
-
-
-
-
-
-
-// Button Mapping ---------------------------------------------------------------------------------
-
-
-int rightButtonMap[] = {
-    // The trigger
-    TS1, DX1,
-    // The 3 thumb buttons
-    TS2, DX2,
-    TS3, DX3,
-    TS4, DX4,
-    // The POV Hat
-    H1L, DXHATLEFT,
-    H1U, DXHATUP,
-    H1R, DXHATRIGHT,
-    H1D, DXHATDOWN,
-    // The 12 buttons on the base
-    B5, DX9,
-    B6, DX10,
-    B7, R_SHIFT+END,
-    B8, DX12,
-    B9, DX25,
-    B10, DX26,
-    B11, DX27,
-    B12, DX28,
-    B13, DX29,
-    B14, DX30,
-    B15, DX31,
-    B16, DX32
-};
-
-int leftButtonMap[] = {
-    // The trigger
-    TS1, DX13,
-    // The 3 thumb buttons
-    TS2, DX14,
-    TS3, DX15,
-    TS4, DX16,
-    // The POV Hat
-    H1L, DX21,
-    H1U, DX22,
-    H1R, DX23,
-    H1D, DX24,
-    // The 12 buttons on the base
-    B5, DX32, 
-    B6, DX32, 
-    B7, R_SHIFT+END, 
-    B8, DX32, 
-    B9, DX32, 
-    B10, DX32,
-    B11, DX32,
-    B12, DX32,
-    B13, DX32,
-    B14, DX32,
-    B15, DX32,
-    B16, DX32
-};
 
 
 // Script Implementation --------------------------------------------------------------------------
@@ -138,34 +68,161 @@ int main()
 
     if(Init(&EventHandle)) return 1;
 
-	SetKBLayout(KB_ENG);
+    SetKBLayout(KB_ENG);
 
     &left = &T16000L;
     &right = &T16000;
 
 
     // Throttle Curves 
-	MapAxis(&right, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
-	SetSCurve(&right, JOYX, 0, 0, 0, 3, 1);
-	MapAxis(&right, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
-	SetSCurve(&right, JOYY, 0, 0, 0, 3, 1);
-	MapAxis(&right, RUDDER, DX_ZROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
-	SetSCurve(&right, RUDDER, 0, 0, 0, 3, 1);
-	MapAxis(&right, THR, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
-	SetSCurve(&T16000, THR, 0, 0, 0, 0, 0);
-	
-    // Right Joystick 
+    MapAxis(&right, JOYX, DX_X_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+    SetSCurve(&right, JOYX, 0, 0, 0, 3, 1);
+    MapAxis(&right, JOYY, DX_Y_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+    SetSCurve(&right, JOYY, 0, 0, 0, 3, 1);
+    MapAxis(&right, RUDDER, DX_ZROT_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+    SetSCurve(&right, RUDDER, 0, 0, 0, 3, 1);
+    MapAxis(&right, THR, DX_SLIDER_AXIS, AXIS_NORMAL, MAP_ABSOLUTE);
+    SetSCurve(&T16000, THR, 0, 0, 0, 0, 0);
+    
+    // Right Joystick  ---------------------------------------------------------------------------------
     MapAxis(&right, JOYX, DX_X_AXIS);
     MapAxis(&right, JOYY, DX_Y_AXIS);
     MapAxis(&right, RUDDER, DX_Z_AXIS);
-    mapButtons(&right, &rightButtonMap);
 
-    // Left Joystick
+    // The trigger
+    MapKey(&right, TS1, DX1);
+
+    // The 3 thumb buttons
+    MapKeyIO(&right, TS2,  // Flight Assists 
+                DX2,
+                SEQ(
+                    CHAIN(
+                        DOWN+DX2,
+                        EXEC("isFAOn = 0; updateThrottleCurve(0);")
+                    ),
+                    CHAIN(
+                        UP+DX2,
+                        EXEC("isFAOn = 1; updateThrottleCurve(1);")
+                    )
+                )
+            );  
+    
+    MapKey(&right, TS4, TEMPO(DX4, DX8, 250));
+    MapKey(&right, TS3, TEMPO(DX3, DX7, 250));
+
+    // The POV hat with macros for PIP management 
+    MapKey(&right, H1L, TEMPO(DXHATLEFT, CHAIN(
+        PULSE+DXHATDOWN,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATLEFT
+    )));
+    
+    MapKey(&right, H1U, TEMPO(DXHATUP, CHAIN(
+        PULSE+DXHATDOWN,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP
+    ))); 
+
+    MapKey(&right, H1R, TEMPO(DXHATRIGHT, CHAIN(
+        PULSE+DXHATDOWN,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATRIGHT,
+        D(),
+        PULSE+DXHATRIGHT
+    )));
+    
+    MapKey(&right, H1D, TEMPO(DXHATDOWN, CHAIN(
+        PULSE+DXHATDOWN,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATLEFT,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP,
+        D(),
+        PULSE+DXHATUP
+    )));
+
+    // The 12 buttons on the base
+    MapKey(&right, B5, DX9);
+    MapKey(&right, B6, DX10);
+    MapKey(&right, B7, R_SHIFT+END);
+    MapKey(&right, B8, DX12);
+    MapKey(&right, B9, DX25);
+    MapKey(&right, B10, DX26);
+    MapKey(&right, B11, DX27);
+    MapKey(&right, B12, DX28);
+    MapKey(&right, B13, DX29);
+    MapKey(&right, B14, DX30);
+    MapKey(&right, B15, DX31);
+    MapKey(&right, B16, DX32);
+
+
+    // Left Joystick  ---------------------------------------------------------------------------------
     MapAxis(&left, JOYX, DX_XROT_AXIS);
     MapAxis(&left, JOYY, DX_YROT_AXIS);
     MapAxis(&left, RUDDER, DX_ZROT_AXIS);
-    mapButtons(&left, &leftButtonMap);
 
+    // The trigger
+    MapKey(&left, TS1, DX13);
+
+    // The 3 thumb buttons
+    MapKey(&left, TS2, TEMPO(DX14, DX18, 250));
+    MapKey(&left, TS3, TEMPO(DX15, DX19, 250));
+    MapKey(&left, TS4, TEMPO(DX16, DX20, 250));
+
+    // The POV Hat
+    MapKey(&left, H1L, DX21);
+    MapKey(&left, H1U, DX22);
+    MapKey(&left, H1R, DX23);
+    MapKey(&left, H1D, DX24);
+
+    // The 12 buttons on the base
+    MapKey(&left, B5, DX32);
+    MapKey(&left, B6, DX32);
+    MapKey(&left, B7, R_SHIFT+END);
+    MapKey(&left, B8, DX32);
+    MapKey(&left, B9, DX32);
+    MapKey(&left, B10, DX32);
+    MapKey(&left, B11, DX32);
+    MapKey(&left, B12, DX32);
+    MapKey(&left, B13, DX32);
+    MapKey(&left, B14, DX32);
+    MapKey(&left, B15, DX32);
+    MapKey(&left, B16, DX32);
+    
     // Map relative throttle input
     if(REL_THROTTLE_ENABLED) {
         MapAxis(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, DX_THROTTLE_AXIS);
@@ -189,15 +246,7 @@ int main()
 
     isFAOn = 1;
     throttleScale = 100;
- 
- 	// Tempo maps on right stick thumb buttons
-    MapKey(&right, TS4, TEMPO(DX4, DX8, 250));
-    MapKey(&right, TS3, TEMPO(DX3, DX7, 250));
 
-    // Tempo map on left stick thumb buttons
-    MapKey(&left, TS2, TEMPO(DX14, DX18, 250));
-    MapKey(&left, TS3, TEMPO(DX15, DX19, 250));
-    MapKey(&left, TS4, TEMPO(DX16, DX20, 250));
     
     /*
     SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
@@ -220,71 +269,6 @@ int main()
         DXHATLEFT,
         DXHATLEFT);
     */
-
-    // POV hat macros for PIP management 
-    MapKey(&right, H1L, TEMPO(DXHATLEFT, CHAIN(
-     	PULSE+DXHATDOWN,
-     	D(),
-    	PULSE+DXHATRIGHT,
-     	D(),
-    	PULSE+DXHATRIGHT,
-     	D(),
-     	PULSE+DXHATLEFT,
-    	D(),
-     	PULSE+DXHATLEFT,
-    	D(),
-     	PULSE+DXHATLEFT,
-    	D(),
-    	PULSE+DXHATLEFT
- 	)));
-	
-	MapKey(&right, H1U, TEMPO(DXHATUP, CHAIN(
-     	PULSE+DXHATDOWN,
-     	D(),
-    	PULSE+DXHATRIGHT,
-     	D(),
-    	PULSE+DXHATRIGHT,
-     	D(),
-     	PULSE+DXHATUP,
-    	D(),
-     	PULSE+DXHATUP,
-    	D(),
-     	PULSE+DXHATUP,
-    	D(),
-    	PULSE+DXHATUP
- 	))); 
-
-	MapKey(&right, H1R, TEMPO(DXHATRIGHT, CHAIN(
-     	PULSE+DXHATDOWN,
-     	D(),
-    	PULSE+DXHATLEFT,
-     	D(),
-    	PULSE+DXHATLEFT,
-     	D(),
-     	PULSE+DXHATRIGHT,
-    	D(),
-     	PULSE+DXHATRIGHT,
-    	D(),
-     	PULSE+DXHATRIGHT,
-    	D(),
-    	PULSE+DXHATRIGHT
- 	)));
- 	
- 	MapKey(&right, H1D, TEMPO(DXHATDOWN, CHAIN(
-     	PULSE+DXHATDOWN,
-     	D(),
-     	PULSE+DXHATLEFT,
-    	D(),
-     	PULSE+DXHATLEFT,
-    	D(),
-    	PULSE+DXHATUP,
-     	D(),
-     	PULSE+DXHATUP,
-     	D(),
-     	PULSE+DXHATUP,
-     	D(),
-    	PULSE+DXHATUP
- 	)));
 }
 
 
@@ -356,28 +340,3 @@ int updateThrottleScale()
     updateThrottleCurve(1);
 }
 
-int mapButtons(alias device, alias list)
-{
-    int length = elements(&list);
-    int i = 0;
-    while(i < length){
-        if(FA_TOGGLE_ENABLED & (&device == &FA_TOGGLE_STICK) & (list[i] == FA_TOGGLE_BUTTON)){
-            MapKeyIO(&FA_TOGGLE_STICK, FA_TOGGLE_BUTTON,
-                list[i+1],
-                SEQ(
-                    CHAIN(
-                        DOWN+list[i+1],
-                        EXEC("isFAOn = 0; updateThrottleCurve(0);")
-                    ),
-                    CHAIN(
-                        UP+list[i+1],
-                        EXEC("isFAOn = 1; updateThrottleCurve(1);")
-                    )
-                )
-            );
-        } else {
-            MapKey(&device, list[i], list[i+1]);
-        }
-        i = i + 2;
-    }
-}
