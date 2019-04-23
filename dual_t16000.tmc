@@ -223,10 +223,10 @@ int main()
     MapKey(&left, B15, DX32);
     MapKey(&left, B16, DX32);
     
+/*
 
-
-    /*
-    SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
+    
+    SetShiftButton(&left, B14, B15, B16, UDTOGGLE);
     MapKeyUMD(&right, H1L,
         TEMPO(DXHATLEFT, CHAIN(
             PULSE+DXHATDOWN,
@@ -306,8 +306,8 @@ int main()
         DXHATDOWN,
         DXHATDOWN
     );
-    */
-
+    
+*/
     
     // Map relative throttle input
     if(REL_THROTTLE_ENABLED) {
