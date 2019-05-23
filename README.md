@@ -1,4 +1,4 @@
-# Dual-t16000--Elite-Dangerous
+# Dual t16000 config for Elite-Dangerous
 
 ## Instructions:
 
