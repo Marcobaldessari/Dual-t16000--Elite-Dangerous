@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Root PresetName="Custom" MajorVersion="3" MinorVersion="0">
+<Root PresetName="dual-t16000m" MajorVersion="3" MinorVersion="0">
 	<KeyboardLayout>en-GB</KeyboardLayout>
 	<MouseXMode Value="" />
 	<MouseXDecay Value="0" />
@@ -303,9 +303,7 @@
 	</SelectTarget>
 	<CycleNextTarget>
 		<Primary Device="Keyboard" Key="Key_G" />
-		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_23">
-			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_7" />
-		</Secondary>
+		<Secondary Device="{NoDevice}" Key="" />
 	</CycleNextTarget>
 	<CyclePreviousTarget>
 		<Primary Device="{NoDevice}" Key="" />
@@ -319,8 +317,8 @@
 	</SelectHighestThreat>
 	<CycleNextHostileTarget>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_21">
-			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_7" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_POV1Left">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_20" />
 		</Secondary>
 	</CycleNextHostileTarget>
 	<CyclePreviousHostileTarget>
@@ -329,7 +327,9 @@
 	</CyclePreviousHostileTarget>
 	<TargetWingman0>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_21">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_7" />
+		</Secondary>
 	</TargetWingman0>
 	<TargetWingman1>
 		<Primary Device="{NoDevice}" Key="" />
@@ -341,7 +341,9 @@
 	</TargetWingman2>
 	<SelectTargetsTarget>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_23">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_7" />
+		</Secondary>
 	</SelectTargetsTarget>
 	<WingNavLock>
 		<Primary Device="Keyboard" Key="Key_Minus" />
@@ -375,7 +377,9 @@
 	</CycleFireGroupNext>
 	<CycleFireGroupPrevious>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_21">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_8" />
+		</Secondary>
 	</CycleFireGroupPrevious>
 	<DeployHardpointToggle>
 		<Primary Device="Keyboard" Key="Key_U" />
@@ -456,9 +460,7 @@
 	<CqcMuteButtonMode Value="mute_pushToTalk" />
 	<UseShieldCell>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_POV1Up">
-			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_20" />
-		</Secondary>
+		<Secondary Device="{NoDevice}" Key="" />
 	</UseShieldCell>
 	<FireChaffLauncher>
 		<Primary Device="{NoDevice}" Key="" />
@@ -466,7 +468,9 @@
 	</FireChaffLauncher>
 	<ChargeECM>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_POV1Down">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_20" />
+		</Secondary>
 	</ChargeECM>
 	<EnableRumbleTrigger Value="1" />
 	<EnableMenuGroups Value="0" />
@@ -552,6 +556,10 @@
 			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_8" />
 		</Secondary>
 	</PlayerHUDModeToggle>
+	<ExplorationFSSEnter>
+		<Primary Device="Keyboard" Key="Key_Apostrophe" />
+		<Secondary Device="{NoDevice}" Key="" />
+	</ExplorationFSSEnter>
 	<UI_Up>
 		<Primary Device="Keyboard" Key="Key_W" />
 		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_POV1Up" />
@@ -721,6 +729,10 @@
 		<Secondary Device="{NoDevice}" Key="" />
 		<ToggleOn Value="0" />
 	</CamTranslateZHold>
+	<GalaxyMapHome>
+		<Primary Device="{NoDevice}" Key="" />
+		<Secondary Device="{NoDevice}" Key="" />
+	</GalaxyMapHome>
 	<ToggleDriveAssist>
 		<Primary Device="Keyboard" Key="Key_Z" />
 		<Secondary Device="{NoDevice}" Key="" />
@@ -804,7 +816,9 @@
 	</BuggyCycleFireGroupNext>
 	<BuggyCycleFireGroupPrevious>
 		<Primary Device="{NoDevice}" Key="" />
-		<Secondary Device="{NoDevice}" Key="" />
+		<Secondary Device="ThrustMasterWarthogCombined" Key="Joy_21">
+			<Modifier Device="ThrustMasterWarthogCombined" Key="Joy_8" />
+		</Secondary>
 	</BuggyCycleFireGroupPrevious>
 	<SelectTarget_Buggy>
 		<Primary Device="Mouse" Key="Mouse_2" />
@@ -1309,10 +1323,6 @@
 		<Primary Device="{NoDevice}" Key="" />
 		<Secondary Device="{NoDevice}" Key="" />
 	</GalnetAudio_ClearQueue>
-	<ExplorationFSSEnter>
-		<Primary Device="Keyboard" Key="Key_Apostrophe" />
-		<Secondary Device="{NoDevice}" Key="" />
-	</ExplorationFSSEnter>
 	<ExplorationFSSCameraPitch>
 		<Binding Device="{NoDevice}" Key="" />
 		<Inverted Value="0" />
