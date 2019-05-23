@@ -6,7 +6,7 @@
 
 // -------------------------------------------------------------------------------------------------
 
-// Original Author: 'drakmaniso' Laurent Moussault <moussault.laurent@gmail.com>
+// Inspired by: 'drakmaniso' Laurent Moussault <moussault.laurent@gmail.com>
 
 // -------------------------------------------------------------------------------------------------
 
@@ -308,7 +308,7 @@ int main()
     );
     */
 
-    
+
     // Map relative throttle input
     if(REL_THROTTLE_ENABLED) {
         MapAxis(&REL_THROTTLE_STICK, REL_THROTTLE_AXIS, DX_THROTTLE_AXIS);
