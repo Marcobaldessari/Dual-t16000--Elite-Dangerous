@@ -2,8 +2,8 @@
 
 ## Instructions
 
-1. Copy "dual_t16000.binds" to appdata\local\Frontier developments\Elite dangerous\options\bindings
-2. Launch T.A.R.G.E.T. script editor, load "dual_t16000.tmc" in the script editor and run it (green play button)
+1. Copy "dual-t16000m.3.0.binds" to appdata\local\Frontier developments\Elite dangerous\options\bindings
+2. Launch T.A.R.G.E.T. script editor, load "TARGET_dual_t16000.tmc" in the script editor and run it (green play button)
 
 ## Features
 
