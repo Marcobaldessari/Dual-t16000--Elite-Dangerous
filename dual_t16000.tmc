@@ -176,7 +176,7 @@ int main()
     )));
 
     // The 12 buttons on the base
-    MapKey(&right, B5, DX9);
+    MapKey(&right, B5, "R");
     MapKey(&right, B6, DX10);
     MapKey(&right, B7, R_SHIFT+END);
     MapKey(&right, B8, DX12);
@@ -210,23 +210,17 @@ int main()
     MapKey(&left, H1D, DX24);
 
     // The 12 buttons on the base
-    MapKey(&left, B5, DX32);
+   //MapKey(&left, B5, L_CTL+L_ALT+'r');
     MapKey(&left, B6, DX32);
     MapKey(&left, B7, R_SHIFT+END);
     MapKey(&left, B8, DX32);
     MapKey(&left, B9, DX32);
-    MapKey(&left, B10, DX32);
-    MapKey(&left, B11, DX32);
-    MapKey(&left, B12, DX32);
-    MapKey(&left, B13, DX32);
-    MapKey(&left, B14, DX32);
-    MapKey(&left, B15, DX32);
-    MapKey(&left, B16, DX32);
+ 
     
 
 
-    /*
-    SetShiftButton(&left, B14, B15, B16 UDTOGGLE);
+    
+    SetShiftButton(&left, B14, &left, B15, B16, UDTOGGLE);
     MapKeyUMD(&right, H1L,
         TEMPO(DXHATLEFT, CHAIN(
             PULSE+DXHATDOWN,
@@ -306,7 +300,7 @@ int main()
         DXHATDOWN,
         DXHATDOWN
     );
-    */
+    
 
 
     // Map relative throttle input
