@@ -185,9 +185,7 @@ int main()
     MapKey(&right, B11, DX27);
     MapKey(&right, B12, DX28);
     MapKey(&right, B13, DX29);
-    MapKey(&right, B14, DX30);
-    MapKey(&right, B15, DX31);
-    MapKey(&right, B16, DX32);
+    
 
 
     // Left Joystick  ---------------------------------------------------------------------------------
